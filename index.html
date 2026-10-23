@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>TQWA</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>">
+
+  <!-- Immediate direction setting script -->
+  <script>
+    (function() {
+      const savedLanguage = localStorage.getItem('language') || 'ar';
+      document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = savedLanguage;
+    })();
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Link to the external CSS file -->
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</head>
+<body>
+<!-- Main Container -->
+<div class="container" id="mainContainer">
+  <!-- Burger Menu (inside container) -->
+  <div class="burger-menu-wrapper">
+    <button id="burgerMenuBtn" class="burger-menu-btn" aria-label="Menu">
+      <img src="icons/bars-solid-full.svg" alt="Menu" class="burger-icon" id="burgerIcon">
+    </button>
+
+    <!-- Sliding Menu Container -->
+    <div id="slidingMenu" class="sliding-menu">
+      <button id="onlineOfflineBtn" class="menu-toggle-btn" aria-label="Online/Offline Mode">
+        <img src="icons/wifi-solid-full.svg" alt="WiFi" class="menu-icon">
+      </button>
+      <button id="downloadModeBtn" class="menu-toggle-btn" aria-label="Download Mode">
+        <img src="icons/download-solid-full.svg" alt="Download" class="menu-icon">
+      </button>
+    </div>
+  </div>
+
+  <!-- Language Select Dropdown -->
+  <div class="language-select">
+    <select id="languageSelect">
+      <option value="ar">العربية - AR</option>
+      <option value="en">English - EN</option>
+      <option value="tr">Türkçe - TR</option>
+      <option value="de">Deutsch - DE</option>
+      <option value="fr">Français - FR</option>
+      <option value="hi">हिन्दी - HI</option>
+      <option value="id">Bahasa Indonesia - ID</option>
+      <option value="it">Italiano - IT</option>
+      <option value="ja">日本語 - JA</option>
+      <option value="ko">한국어 - KO</option>
+      <option value="nl">Nederlands - NL</option>
+      <option value="pt">Português - PT</option>
+      <option value="ru">Русский - RU</option>
+      <option value="sw">Kiswahili - SW</option>
+      <option value="zh">中文 (简体) - ZH</option>
+    </select>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 data-translate="TQWA" data-ar="TQWA">🌙 TQWA</h1>
+
+    <!-- Reader Selection -->
+    <div class="reader-section">
+      <select id="readerSelect" onchange="loadSelectedReader()">
+        <option value="random" data-translate="قارئ عشوائي" data-ar="قارئ عشوائي">قارئ عشوائي</option>
+        <option value="exclusive" data-translate="محمود خليل الحصري" data-ar="محمود خليل الحصري">محمود خليل الحصري</option>
+        <option value="tobalawi" data-translate="محمد محمود الطبلاوي" data-ar="محمد محمود الطبلاوي">محمد محمود الطبلاوي</option>
+        <option value="manshawi" data-translate="محمد صديق المنشاوي" data-ar="محمد صديق المنشاوي">محمد صديق المنشاوي</option>
+        <option value="abdbasat" data-translate="عبد الباسط عبد الصمد" data-ar="عبد الباسط عبد الصمد">عبد الباسط عبد الصمد</option>
+        <option value="mahmoudbanna" data-translate="محمود علي البنا" data-ar="محمود علي البنا">محمود علي البنا</option>
+        <option value="mahmoudeyup" data-translate="محمد أيوب" data-ar="محمد أيوب">محمد أيوب</option>
+        <option value="SaadAlGhamdi" data-translate="سعد الغامدي" data-ar="سعد الغامدي">سعد الغامدي</option>
+      </select>
+      <button id="downloadAllBtn" class="download-all-btn" onclick="downloadAllTracks()" style="display: none;" data-translate="تنزيل الكل" data-ar="تنزيل الكل">
+        📥 تنزيل الكل
+      </button>
+    </div>
+
+    <!-- Audio Player (Web only) -->
+    <div class="audio-section">
+      <audio id="audioPlayer" controls>
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <!-- Android Media Controls -->
+    <div class="android-controls" id="androidControls" style="display: none;">
+      <div class="media-controls">
+        <button id="prevButton" onclick="previousTrack()" class="control-btn" title="Previous">
+          <img src="icons/backward-solid-full.svg" class="control-icon" alt="Previous">
+        </button>
+        <button id="playPauseButton" onclick="togglePlayPause()" class="control-btn primary" title="Play/Pause">
+          <img src="icons/play-solid-full.svg" class="control-icon play-icon" alt="Play">
+          <img src="icons/pause-solid-full.svg" class="control-icon pause-icon" style="display: none;" alt="Pause">
+        </button>
+        <button id="stopButton" onclick="stopPlayback()" class="control-btn" title="Stop">
+          <img src="icons/stop-solid-full.svg" class="control-icon" alt="Stop">
+        </button>
+        <button id="nextButton" onclick="nextTrack()" class="control-btn" title="Next">
+          <img src="icons/forward-solid-full.svg" class="control-icon" alt="Next">
+        </button>
+      </div>
+
+      <!-- Progress Info with Seekbar -->
+      <div class="progress-info" id="progressInfo" style="display: none;">
+        <span id="currentTime">0:00:00</span>
+        <input type="range" id="seekBar" class="seek-bar" min="0" max="100" value="0" step="1">
+        <span id="totalDuration">0:00:00</span>
+      </div>
+    </div>
+
+    <!-- Play Button -->
+    <div class="control-section">
+      <button id="playButton" onclick="calculateTrackToPlay()" data-translate="تشغيل كبث قرآني" data-ar="تشغيل كبث قرآني">
+        🎵 تشغيل كبث قرآني
+      </button>
+    </div>
+
+    <!-- Current Track Display -->
+    <div class="track-info-section">
+      <div id="currentTrack" data-translate="لاتوجد وسائط قيد التشغيل" data-ar="لاتوجد وسائط قيد التشغيل">
+        📻 لاتوجد وسائط قيد التشغيل
+      </div>
+      <div id="loadingSpinner">
+        جاري التجهيز...
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Track List -->
+    <div class="tracklist-section">
+      <div id="trackList"></div>
+    </div>
+  </div>
+
+  <!-- Navigation Circles -->
+  <div class="circle-container">
+    <div class="circle active" onclick="toggleCircle(1)" title="الصفحة الرئيسية"></div>
+    <div class="circle" onclick="toggleCircle(2)" title="عن الإذاعة"></div>
+  </div>
+</div>
+
+<!-- Second Container (About Page) -->
+<div class="container2" id="secondContainer">
+  <div class="about-content">
+    <h1 data-translate="about_title" data-ar="عن الإذاعة">📡 عن الإذاعة</h1>
+
+    <div class="about-intro">
+      <div class="welcome-card">
+        <div class="welcome-icon">🎙️</div>
+        <p data-translate="about_welcome" data-ar="نرحب بكم في إذاعة على ضفاف القرآن، وجهتك المفضلة للاستماع إلى القرآن الكريم برواية حفص عن عاصم. نسعى جاهدين لتوفير تجربة استماع فريدة ومريحة لجميع محبي القرآن.">
+          نرحب بكم في إذاعة على ضفاف القرآن، وجهتك المفضلة للاستماع إلى القرآن الكريم برواية حفص عن عاصم. نسعى جاهدين لتوفير تجربة استماع فريدة ومريحة لجميع محبي القرآن.
+        </p>
+      </div>
+    </div>
+
+    <div class="features-section">
+      <h2 data-translate="about_features" data-ar="ما يميزنا:">⭐ ما يميزنا</h2>
+
+      <div class="feature-cards">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <div class="feature-content">
+            <h3 data-translate="about_feature1" data-ar="تنوع القراء والسور">تنوع القراء والسور</h3>
+            <p data-translate="about_feature1_desc" data-ar="نقدم لك مجموعة واسعة من القراء المتميزين، ويمكنك اختيار السورة التي ترغب في الاستماع إليها بحرية تامة.">
+              نقدم لك مجموعة واسعة من القراء المتميزين، ويمكنك اختيار السورة التي ترغب في الاستماع إليها بحرية تامة.
+            </p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔀</div>
+          <div class="feature-content">
+            <h3 data-translate="about_feature2" data-ar="الاستماع العشوائي">الاستماع العشوائي</h3>
+            <p data-translate="about_feature2_desc" data-ar="استمتع بتجربة استماع جديدة في كل مرة، حيث يمكنك اختيار الاستماع العشوائي للقراء.">
+              استمتع بتجربة استماع جديدة في كل مرة، حيث يمكنك اختيار الاستماع العشوائي للقراء.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="programs-section">
+      <h2 data-translate="about_apps" data-ar="عن برامجنا:">📱 عن برامجنا</h2>
+
+      <div class="program-card">
+        <div class="program-icon">🎧</div>
+        <div class="program-content">
+          <h3 data-translate="about_feature3_4" data-ar="التفسير الصوتي والبث المباشر">التفسير الصوتي والبث المباشر</h3>
+          <p data-translate="about_feature3_4_desc_part1" data-ar="إلى جانب التلاوات القرآنية، نقدم لك دروسًا تفسيرية صوتية باللغة العربية لتعميق فهمك ومعرفتك بالقرآن الكريم، بالإضافة إلى بث مباشر لإذاعتنا على مدار الساعة عبر">
+            إلى جانب التلاوات القرآنية، نقدم لك دروسًا تفسيرية صوتية باللغة العربية لتعميق فهمك ومعرفتك بالقرآن الكريم، بالإضافة إلى بث مباشر لإذاعتنا على مدار الساعة عبر
+          </p>
+
+          <div class="download-links">
+            <a href="https://adqfm.net/" target="_blank" rel="noopener noreferrer" onclick="openWebsite(event)" class="download-btn website-btn" data-translate="about_website" data-ar="موقعنا الإلكتروني">
+              <span class="btn-icon">🌐</span>
+              <span class="btn-text">موقعنا الإلكتروني</span>
+            </a>
+
+            <a href="https://play.google.com/store/apps/details?id=com.adqfm.ARFM" target="_blank" rel="noopener noreferrer" onclick="openGooglePlay(event)" class="download-btn app-btn" data-translate="about_google_play" data-ar="تطبيق الأندرويد">
+              <span class="btn-icon">📲</span>
+              <span class="btn-text">تطبيق الأندرويد</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Circles for Second Container -->
+  <div class="circle-container">
+    <div class="circle" onclick="toggleCircle(1)" title="الصفحة الرئيسية"></div>
+    <div class="circle active" onclick="toggleCircle(2)" title="عن الإذاعة"></div>
+  </div>
+</div>
+
+<!-- Link to the external JavaScript file -->
+<script src="script.js"></script>
+</body>
+</html>
